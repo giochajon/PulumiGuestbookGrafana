@@ -1,0 +1,9 @@
+node_modules/
+simple/node_modules/
+
+# Pulumi state
+.pulumi/
+*.pem
+
+# Local env
+.env
