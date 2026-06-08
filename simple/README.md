@@ -164,11 +164,9 @@ This returns CPU usage for every Guestbook pod (frontend, redis-leader, redis-re
 ### 5. Verify from the CLI
 
 ```sh
-# List all active scrape targets
-kubectl exec -n monitoring \
-  $(kubectl get pod -n monitoring -l app.kubernetes.io/name=prometheus -o jsonpath='{.items[0].metadata.name}') \
-  -- wget -qO- http://localhost:9090/api/v1/targets \
-  | python3 -m json.tool | grep '"job"\|"health"'
+# With the Prometheus port-forward running, query the API locally
+curl -s http://localhost:9090/api/v1/targets \
+  | python3 -m json.tool | grep -E '"job"|"health"'
 ```
 
 ---

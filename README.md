@@ -175,10 +175,10 @@ sum(container_memory_usage_bytes{namespace="default",container!=""}) by (pod)
 
 ### 5. Verify targets via CLI
 
+With the Prometheus port-forward from step 1 still running, query the API locally:
+
 ```sh
-kubectl exec -n monitoring \
-  $(kubectl get pod -n monitoring -l app.kubernetes.io/name=prometheus -o jsonpath='{.items[0].metadata.name}') \
-  -- wget -qO- http://localhost:9090/api/v1/targets \
+curl -s http://localhost:9090/api/v1/targets \
   | python3 -m json.tool | grep -E '"job"|"health"'
 ```
 
