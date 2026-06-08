@@ -5,6 +5,7 @@ import * as pulumi from "@pulumi/pulumi";
 
 const config = new pulumi.Config();
 const isMinikube = config.getBoolean("isMinikube");
+const grafanaAdminPassword = config.requireSecret("grafanaAdminPassword");
 
 // ---------------------------------------------------------------------------
 // REDIS LEADER  (+ redis_exporter sidecar for Prometheus metrics)
@@ -239,8 +240,6 @@ const guestbookDashboardJson = JSON.stringify({
 // ---------------------------------------------------------------------------
 // KUBE-PROMETHEUS-STACK  (Prometheus Operator + Grafana via Helm)
 // ---------------------------------------------------------------------------
-
-const grafanaAdminPassword = "admin123";
 
 const prometheusStack = new k8s.helm.v3.Release("prometheus-stack", {
     name: "monitoring",

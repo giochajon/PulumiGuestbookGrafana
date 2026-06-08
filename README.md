@@ -65,6 +65,12 @@ For a local Kind cluster (no cloud load-balancer):
 pulumi config set isMinikube false
 ```
 
+Set the Grafana admin password as an **encrypted secret** (never stored in plain text):
+
+```sh
+pulumi config set --secret grafanaAdminPassword <your-password>
+```
+
 > Set `isMinikube true` only on a real Minikube cluster — it switches the frontend service to ClusterIP.
 
 ### 5. Deploy
@@ -80,12 +86,18 @@ Expected outputs when complete:
 ```
 Outputs:
     frontendIp               : "<pending – use kubectl port-forward svc/frontend 8080:80>"
-    grafanaPassword          : "admin123"
+    grafanaPassword          : "[secret]"
     grafanaPortForwardCmd    : "kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80"
     grafanaUrl               : "http://localhost:3000"
     grafanaUser              : "admin"
     prometheusPortForwardCmd : "kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090"
     prometheusUrl            : "http://localhost:9090"
+```
+
+To retrieve the Grafana password at any time:
+
+```sh
+pulumi stack output grafanaPassword --show-secrets
 ```
 
 ---
@@ -108,7 +120,7 @@ Open **[http://localhost:8080](http://localhost:8080)**
 |----------|------------------------|
 | URL      | **http://localhost:3000** |
 | Username | `admin`               |
-| Password | `admin123`            |
+| Password | run `pulumi stack output grafanaPassword --show-secrets` |
 
 ### Port-forward Grafana
 
