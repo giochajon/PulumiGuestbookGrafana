@@ -143,7 +143,9 @@ Open **[http://localhost:9090](http://localhost:9090)**.
 
 ### 2. Check scrape targets
 
-Go to **Status → Targets** and look for `serviceMonitor/default/redis-guestbook`. You should see two entries — one for `redis-leader` and one for `redis-replica` — both with **State: UP**.
+Go to **Status → Targets** and look for the scrape pool `serviceMonitor/default/redis-guestbook/0`. You should see two entries — one for `redis-leader` and one for `redis-replica` — both with **State: UP**.
+
+> The `/0` suffix is the endpoint index assigned by Prometheus Operator (our ServiceMonitor defines a single endpoint).
 
 ### 3. Query Redis metrics
 
@@ -156,8 +158,9 @@ redis_connected_clients
 # Memory allocated by Redis
 redis_memory_used_bytes
 
-# Command throughput (rate over 1 min)
-rate(redis_commands_total[1m])
+# Total command throughput per instance (rate over 1 min)
+# redis_commands_total has a "cmd" label — sum across all command types
+sum(rate(redis_commands_total[1m])) by (instance)
 ```
 
 ### 4. Query pod resource metrics

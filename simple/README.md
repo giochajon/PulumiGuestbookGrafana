@@ -132,7 +132,9 @@ Open **http://localhost:9090**.
 
 ### 2. Check ServiceMonitor targets
 
-Navigate to **Status → Targets**. Look for the `serviceMonitor/default/redis-guestbook` entries — one for `redis-leader` and one for `redis-replica`. Both should show **State: UP**.
+Navigate to **Status → Targets**. Look for the scrape pool `serviceMonitor/default/redis-guestbook/0` — one for `redis-leader` and one for `redis-replica`. Both should show **State: UP**.
+
+> The `/0` suffix is the endpoint index assigned by Prometheus Operator (our ServiceMonitor defines a single endpoint).
 
 ### 3. Query a Redis metric
 
@@ -146,7 +148,9 @@ You should see one time-series per Redis instance. Try also:
 
 ```promql
 redis_memory_used_bytes
-redis_commands_total
+
+# redis_commands_total has a "cmd" label — sum to get total throughput per instance
+sum(rate(redis_commands_total[1m])) by (instance)
 ```
 
 ### 4. Check pod-level metrics via kube-state-metrics
